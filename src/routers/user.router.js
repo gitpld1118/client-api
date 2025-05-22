@@ -3,6 +3,7 @@ const router = express.Router();
 
 const { insertUser, getUserByEmail } = require("../model/user/User.model");
 const { hashPassword, comparePassword } = require("../helper/bcrypt.helper");
+const { createAccessJWT, createRefreshJWT } = require("../helper/jwt.helper");
 
 router.all("/", (req, res, next) => {
   // res.json({ message: "return form user router" });
@@ -18,13 +19,14 @@ router.post("/", async (req, res) => {
     // hash password
     const hashedPass = await hashPassword(password);
 
-    const newUserObj = { 
-        name, 
-        company, 
-        address, 
-        phone, 
-        email, 
-        password: hashedPass };
+    const newUserObj = {
+      name,
+      company,
+      address,
+      phone,
+      email,
+      password: hashedPass,
+    };
     const result = await insertUser(newUserObj);
     console.log(result);
     res.json({ message: "New user created", result });
@@ -35,30 +37,39 @@ router.post("/", async (req, res) => {
 });
 
 // User sign in Router
-router.post("/login", async (req, res) =>{
+router.post("/login", async (req, res) => {
   console.log(req.body);
 
   const { email, password } = req.body;
 
   /// hash our password and compare with the db one.
 
-  if( !email || !password ){
-    return res.json({ status: "error", message: "Invalid form submition" })
+  if (!email || !password) {
+    return res.json({ status: "error", message: "Invalid form submition" });
   }
-
-
 
   const user = await getUserByEmail(email);
 
   const passFormDb = user && user._id ? user.password : null;
 
-  if(!passFormDb) 
-    return res.json({ status: "error", message: "Invalid email or password!" })
+  if (!passFormDb)
+    return res.json({ status: "error", message: "Invalid email or password!" });
 
-  const result = await comparePassword(password, passFormDb)
-  console.log(result);
+  const result = await comparePassword(password, passFormDb);
 
-  res.json({status:"success", message: "Login Successfully!"})
-})
+  if (!result) {
+    return res.json({ status: "error", message: "Invalid email or password!" });
+  }
+
+  const accessJWT = await createAccessJWT(user.email);
+  const refreshJWT = await createRefreshJWT(user.email);
+
+  res.json({
+    status: "success",
+    message: "Login Successfully!",
+    accessJWT,
+    refreshJWT,
+  });
+});
 
 module.exports = router;

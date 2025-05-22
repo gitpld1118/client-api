@@ -8,20 +8,10 @@ const morgan = require("morgan");
 const port = process.env.PORT || 3001;
 
 // API security
-app.use(helmet());
+// app.use(helmet());
 
 // handle CORS error
 app.use(cors());
-
-// MongoDB Connection Setup
-// const mongoose = require("mongoose");
-
-// mongoose.connect(process.env.MONGO_URL, {
-//   useNewUrlParser: true,
-//   useUnifiedTopology: true,
-//   useFindAndModify: false,
-//   useCreateIndex: true,
-// });
 
 const mongoose = require("mongoose");
 

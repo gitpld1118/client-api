@@ -5,14 +5,11 @@ const { insertUser, getUserByEmail } = require("../model/user/User.model");
 const { hashPassword, comparePassword } = require("../helper/bcrypt.helper");
 const { createAccessJWT, createRefreshJWT } = require("../helper/jwt.helper");
 
-router.all("/", (req, res, next) => {
-  // res.json({ message: "return form user router" });
-
-  next();
-});
+// router.all("/", (req, res, next) => {
+//   next();
+// });
 
 // Create new user router
-
 router.post("/", async (req, res) => {
   const { name, company, address, phone, email, password } = req.body;
   try {
@@ -43,7 +40,6 @@ router.post("/login", async (req, res) => {
   const { email, password } = req.body;
 
   /// hash our password and compare with the db one.
-
   if (!email || !password) {
     return res.json({ status: "error", message: "Invalid form submition" });
   }
@@ -61,8 +57,8 @@ router.post("/login", async (req, res) => {
     return res.json({ status: "error", message: "Invalid email or password!" });
   }
 
-  const accessJWT = await createAccessJWT({email: user.email});
-  const refreshJWT = await createRefreshJWT({email: user.email});
+  const accessJWT = await createAccessJWT(user.email, `${user._id}`);
+  const refreshJWT = await createRefreshJWT(user.email, `${user._id}`);
 
 
   // const accessJWT = await createAccessJWT( user.email, '${user._id}' );

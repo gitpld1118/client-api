@@ -19,7 +19,7 @@ const UserSchema = new Schema({
   },
   phone: {
     type: Number,
-    maxLength: 11,
+    maxLength: 15,
   },
   email: {
     type: String,
@@ -42,7 +42,7 @@ const UserSchema = new Schema({
     addedAt: {
       type: Date,
       required: true,
-      default: Date.now(),
+      default: Date.now,
     }
   }
 });

@@ -21,34 +21,11 @@ const storeUserRefreshJWT = (_id, token) => {
       $set: { "refreshJWT.token": token, "refreshJWT.addedAt": Date.now() },
     },
     { new: true }
-  );
+  )
 };
 
 module.exports = {
   insertUser,
   getUserByEmail,
+  storeUserRefreshJWT,
 };
-
-// const getUserByEmail = (email) =>{
-//   return new Promise((resolve, reject)=>{
-//     if(!email) return false
-//     try {
-//       UserSchema.findOne({email})
-//         .then(user => {
-//           resolve(data)
-//         }).catch(err => {
-//           reject(error)
-//         });
-
-//     //   UserSchema.findOne({email}, (error, data)=>{
-//     //     if(error){
-//     //       reject(error)    }
-//     // resolve(data)
-//     //   })
-
-//     } catch (error) {
-//       reject(error)
-//     }
-
-//   })
-// }
